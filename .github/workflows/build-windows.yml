@@ -1,0 +1,32 @@
+name: Build Flutter Windows App
+
+on:
+  push:
+    branches: [ main ] # Or your default branch
+  workflow_dispatch: # Allows you to manually trigger the workflow from the Actions tab
+
+jobs:
+  build-windows:
+    runs-on: windows-latest # Specifies the job will run on a Windows runner
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable' # 'stable' or a specific version
+
+    - name: Get Flutter dependencies
+      run: flutter pub get
+
+    - name: Build Windows app
+      run: flutter build windows --release
+
+    - name: Upload Windows build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-release-build
+        # The path is the folder containing your .exe and required DLLs
+        path: build/windows/x64/runner/Release/
